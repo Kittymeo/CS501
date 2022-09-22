@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editTextNumber2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/btnCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="69dp"
+        android:text="Calculate"
+        app:layout_constraintEnd_toEndOf="@+id/edtOp2"
+        app:layout_constraintStart_toStartOf="@+id/edtOp2"
+        app:layout_constraintTop_toBottomOf="@+id/edtOp2" />
+
+    <EditText
+        android:id="@+id/editTextTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="time" />
+
+    <EditText
+        android:id="@+id/edtOp1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="91dp"
+        android:layout_marginBottom="92dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        app:layout_constraintBottom_toTopOf="@+id/edtOp2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtOp2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="228dp"
+        android:layout_marginEnd="88dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="76dp"
+        android:text="ANSWER"
+        app:layout_constraintStart_toStartOf="@+id/btnCalculate"
+        app:layout_constraintTop_toBottomOf="@+id/btnCalculate" />
+
+    <EditText
+        android:id="@+id/editTextTextEmailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="572dp" />
+
+    <EditText
+        android:id="@+id/editTextTextPostalAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPostalAddress"
+        tools:layout_editor_absoluteX="135dp"
+        tools:layout_editor_absoluteY="554dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        tools:layout_editor_absoluteX="162dp"
+        tools:layout_editor_absoluteY="403dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

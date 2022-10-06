@@ -1,10 +1,14 @@
 package com.example.hangmangame;
 
 
+import java.util.List;
 import java.util.Random;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 import android.widget.ImageView;
@@ -70,27 +74,6 @@ public class GameActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if(savedInstanceState !=null){
-
-            total_len = savedInstanceState.getInt("total_len");
-            turn = savedInstanceState.getInt("turn");
-            hint_count = savedInstanceState.getInt("hint_count");
-            test = savedInstanceState.getString("test");
-            answer_record = savedInstanceState.getString("answer_record");
-            alphabet = savedInstanceState.getString("alphabet");
-            without_answer = savedInstanceState.getString("without_answer");
-
-//            wd0.setText(savedInstanceState.getString("wd0"));
-//            wd1.setText(savedInstanceState.getString("wd1"));
-//            wd2.setText(savedInstanceState.getString("wd2"));
-//            wd3.setText(savedInstanceState.getString("wd3"));
-//            wd4.setText(savedInstanceState.getString("wd4"));
-//            wd5.setText(savedInstanceState.getString("wd5"));
-
-        }
-
-
-
         setContentView(R.layout.activity_game);
 
          wd0 = (TextView) findViewById(R.id.word0);
@@ -149,23 +132,172 @@ public class GameActivity extends AppCompatActivity {
             outState.putInt("turn",turn);
             outState.putInt("hint_count",hint_count);
 
+            outState.putString("hint",hint.getText().toString());
+
+
+
+            outState.putCharSequence("wd0",wd0.getText().toString());
+//            if (wd0.getText().toString() != null){
+//                Log.w("tag_success","in save w0");
+//            }else {
+//                Log.w("tag_success","in save null");
+//            }
+            outState.putString("wd1",wd1.getText().toString());
+            outState.putString("wd2",wd2.getText().toString());
+            outState.putString("wd3",wd3.getText().toString());
+            outState.putString("wd4",wd4.getText().toString());
+            outState.putString("wd5",wd5.getText().toString());
+
+            outState.putBoolean("b1",btA.isEnabled());
+            outState.putBoolean("b2",btB.isEnabled());
+            outState.putBoolean("b3",btC.isEnabled());
+            outState.putBoolean("b4",btD.isEnabled());
+            outState.putBoolean("b5",btE.isEnabled());
+            outState.putBoolean("b6",btF.isEnabled());
+            outState.putBoolean("b7",btG.isEnabled());
+            outState.putBoolean("b8",btH.isEnabled());
+            outState.putBoolean("b9",btI.isEnabled());
+            outState.putBoolean("b10",btJ.isEnabled());
+            outState.putBoolean("b11",btK.isEnabled());
+            outState.putBoolean("b12",btL.isEnabled());
+            outState.putBoolean("b13",btM.isEnabled());
+            outState.putBoolean("b14",btN.isEnabled());
+            outState.putBoolean("b15",btO.isEnabled());
+            outState.putBoolean("b16",btP.isEnabled());
+            outState.putBoolean("b17",btQ.isEnabled());
+            outState.putBoolean("b18",btR.isEnabled());
+            outState.putBoolean("b19",btS.isEnabled());
+            outState.putBoolean("b20",btT.isEnabled());
+            outState.putBoolean("b21",btU.isEnabled());
+            outState.putBoolean("b22",btV.isEnabled());
+            outState.putBoolean("b23",btW.isEnabled());
+            outState.putBoolean("b24",btX.isEnabled());
+            outState.putBoolean("b25",btY.isEnabled());
+            outState.putBoolean("b26",btZ.isEnabled());
+
 
 
             super.onSaveInstanceState(outState);
-
-//            outState.putString("wd0",wd0.getText().toString());
-//            outState.putString("wd1",wd1.getText().toString());
-//            outState.putString("wd2",wd2.getText().toString());
-//            outState.putString("wd3",wd3.getText().toString());
-//            outState.putString("wd4",wd4.getText().toString());
-//            outState.putString("wd5",wd5.getText().toString());
 
 
 
         }
 
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
 
-        public ArrayList<Integer> getIndex(String x, String y){
+
+        total_len = savedInstanceState.getInt("total_len");
+        turn = savedInstanceState.getInt("turn");
+        hint_count = savedInstanceState.getInt("hint_count");
+        test = savedInstanceState.getString("test");
+        answer_record = savedInstanceState.getString("answer_record");
+        alphabet = savedInstanceState.getString("alphabet");
+        without_answer = savedInstanceState.getString("without_answer");
+
+        CharSequence w0 = savedInstanceState.getCharSequence("wd0");
+        wd0.setText(w0.toString());
+        CharSequence w1 = savedInstanceState.getCharSequence("wd1");
+        wd1.setText(w1);
+        CharSequence w2 = savedInstanceState.getCharSequence("wd2");
+        wd2.setText(w2);
+        CharSequence w3 = savedInstanceState.getCharSequence("wd3");
+        wd3.setText(w3);
+        CharSequence w4 = savedInstanceState.getCharSequence("wd4");
+        wd4.setText(w4);
+        CharSequence w5 = savedInstanceState.getCharSequence("wd5");
+        wd5.setText(w5);
+
+        checkTurn(turn);
+
+        CharSequence saved_hint = savedInstanceState.getCharSequence("hint");
+        hint.setText(saved_hint);
+
+        if(!savedInstanceState.getBoolean("b1")){
+            btA.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b2")){
+            btB.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b3")){
+            btC.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b4")){
+            btD.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b5")){
+            btE.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b6")){
+            btF.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b7")){
+            btG.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b8")){
+            btH.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b9")){
+            btI.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b10")){
+            btJ.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b11")){
+            btK.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b12")){
+            btL.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b13")){
+            btM.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b14")){
+            btN.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b15")){
+            btO.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b16")){
+            btP.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b17")){
+            btQ.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b18")){
+            btR.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b19")){
+            btS.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b20")){
+            btT.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b21")){
+            btU.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b22")){
+            btV.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b23")){
+            btW.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b24")){
+            btX.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b25")){
+            btY.setEnabled(false);
+        }
+        if(!savedInstanceState.getBoolean("b26")){
+            btZ.setEnabled(false);
+        }
+
+
+
+    }
+
+    public ArrayList<Integer> getIndex(String x, String y){
             ArrayList<Integer> list = new ArrayList<Integer>();
             int index = y.indexOf(x);
             while (index >= 0) {

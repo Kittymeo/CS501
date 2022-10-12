@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 
 public class GameFragment extends Fragment {
@@ -22,7 +24,7 @@ public class GameFragment extends Fragment {
     public int score;
     public List<String> dictionary = Arrays.asList("apple", "pear", "banana");
     public ArrayList<String> used_words;
-    public List<Character> alphabet= Arrays.asList('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z');
+    public ArrayList<Character> alphabet = new ArrayList<Character>(60);
     public List<Character> vowels= Arrays.asList('a','e','i','o','u');
     public String current_word;
     public Button current_Btn;
@@ -55,6 +57,87 @@ public class GameFragment extends Fragment {
         void onInputGameSent(int score);
     }
 
+    public void changeAlphabet(){
+//        alphabet.add('a');
+//        alphabet.add('e');
+//        alphabet.add('i');
+//        alphabet.add('o');
+//        alphabet.add('u');
+
+        Random rn = new Random();
+        String a = dictionary.get(rn.nextInt(dictionary.toArray().length))+ dictionary.get(rn.nextInt(dictionary.toArray().length))+ dictionary.get(rn.nextInt(dictionary.toArray().length));
+        for (int i = 0; i<a.length();i++){
+            alphabet.add(a.charAt(i));
+
+        }
+
+    }
+    public void populateBtns(Button[][] btn_list){
+        Random rn = new Random();
+//        btn_list[0][0].setText(alphabet.get(rn.nextInt(26)));
+//        if(btn_list[0][0] != null){
+//            btn_list[0][0].setText("34");
+//        }else{
+//            r1c1.setText("nn");
+//        }
+        try {
+            for (int i = 0; i<4;i++){
+                for (int j = 0; j<4;j++){
+                    if(btn_list[i][j] != null){
+                        btn_list[i][j].setText(String.valueOf(alphabet.get(rn.nextInt(alphabet.size()))));
+                    }
+
+                }
+            }
+        }catch (Exception e){
+            Log.w("failed",e);
+        };
+
+
+
+    }
+    public boolean is_valid_move(Button lastBtn, Button currentBtn){
+        int lr=99,lc=99,cr=99,cc =99;
+        for (int i = 0; i<4;i++){
+            for (int j = 0; j<4;j++){
+                if (btn_list[i][j] == lastBtn){
+                    lr = i;
+                    lc = j;
+                }
+                else if (btn_list[i][j] == currentBtn){
+                    cr = i;
+                    cc = j;
+                }
+            }
+        }
+        if (Math.abs(lr-cr)<=1 && Math.abs(lc-cc)<=1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    public boolean is_valid_word(String str){
+        int vol_num = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if(vowels.contains(str.charAt(i))){
+                vol_num+=1;
+            }
+        }
+        if (str.length()>=4 && dictionary.contains(str) && vol_num>=2 && !used_words.contains(str)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+//    public void onClick (View v){
+//
+//    }
+
+
 
 
     @Override
@@ -83,11 +166,191 @@ public class GameFragment extends Fragment {
         submitBtn = view_gameFragment.findViewById(R.id.submit_btn);
         currentWordTv = view_gameFragment.findViewById(R.id.selected_word);
 
-
+        Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
+        currentWordTv.setText(" ");
+        current_word="";
+        changeAlphabet();
+        populateBtns(btn_list);
         submitBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 listener.onInputGameSent(score);
+            }
+        });
+        r1c1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r1c1.setEnabled(false);
+                current_word += r1c1.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r1c1;
+            }
+        });
+        r1c2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r1c2.setEnabled(false);
+                current_word += r1c2.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r1c2;
+            }
+        });
+        r1c3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r1c3.setEnabled(false);
+                current_word += r1c3.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r1c3;
+            }
+        });
+        r1c4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r1c4.setEnabled(false);
+                current_word += r1c4.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r1c4;
+            }
+        });
+        r2c1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r2c1.setEnabled(false);
+                current_word += r2c1.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r2c1;
+            }
+        });
+        r2c2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r2c2.setEnabled(false);
+                current_word += r2c2.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r2c2;
+            }
+        });
+        r2c3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r2c3.setEnabled(false);
+                current_word += r2c3.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r2c3;
+            }
+        });
+        r2c4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r2c4.setEnabled(false);
+                current_word += r2c4.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r2c4;
+            }
+        });
+        r3c1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r3c1.setEnabled(false);
+                current_word += r3c1.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r3c1;
+            }
+        });
+        r3c2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r3c2.setEnabled(false);
+                current_word += r3c2.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r3c2;
+            }
+        });
+        r3c3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r3c3.setEnabled(false);
+                current_word += r3c3.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r3c3;
+            }
+        });
+        r3c4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r3c4.setEnabled(false);
+                current_word += r3c4.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r3c4;
+            }
+        });
+        r4c1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r4c1.setEnabled(false);
+                current_word += r4c1.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r4c1;
+            }
+        });
+        r4c2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r4c2.setEnabled(false);
+                current_word += r4c2.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r4c2;
+            }
+        });
+        r4c3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r4c3.setEnabled(false);
+                current_word += r4c3.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r4c3;
+            }
+        });
+        r4c4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.w("success", "btn 111one");
+                r4c4.setEnabled(false);
+                current_word += r4c4.getText();
+                currentWordTv.setText(current_word);
+                last_Btn = current_Btn;
+                current_Btn = r4c4;
             }
         });
         return view_gameFragment;

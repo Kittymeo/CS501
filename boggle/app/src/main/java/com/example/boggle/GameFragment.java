@@ -14,17 +14,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
+import java.util.Scanner;
 
 
 public class GameFragment extends Fragment {
     public GameListener listener;
     public int score;
     public List<String> dictionary = Arrays.asList("apple", "pear", "banana");
-    public ArrayList<String> used_words;
+    public ArrayList<String> used_words = new ArrayList<String>(60);
     public ArrayList<Character> alphabet = new ArrayList<Character>(60);
     public List<Character> vowels= Arrays.asList('a','e','i','o','u');
     public String current_word;
@@ -134,16 +137,33 @@ public class GameFragment extends Fragment {
             }
         }
         if (str.length()>=4 && dictionary.contains(str) && vol_num>=2 && !used_words.contains(str)){
+            used_words.add(str);
             return true;
         }else{
             return false;
         }
     }
 
+    public int countScore(String word){
+        int localscore = 0;
+        boolean is_double=false;
+        List<Character> special= Arrays.asList('s','z','p','x','q');
+        for (int i = 0; i < word.length(); i++) {
+            if(vowels.contains(word.charAt(i))){
+                localscore+=5;
+            }else{
+                if (special.contains(word.charAt(i))){
+                    is_double = true;
+                }
+                localscore+=1;
+            }
+        }
+        if (is_double){
+            localscore *= 2;
+        }
+        return localscore;
 
-//    public void onClick (View v){
-//
-//    }
+    }
 
 
 
@@ -174,6 +194,14 @@ public class GameFragment extends Fragment {
         submitBtn = view_gameFragment.findViewById(R.id.submit_btn);
         currentWordTv = view_gameFragment.findViewById(R.id.selected_word);
 
+
+//        Scanner s = new Scanner(new File("filepath"));
+//        ArrayList<String> list = new ArrayList<String>();
+//        while (s.hasNext()){
+//            list.add(s.next());
+//        }
+//        s.close();
+
         Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
         currentWordTv.setText(" ");
         current_word="";
@@ -182,7 +210,16 @@ public class GameFragment extends Fragment {
         submitBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+
+                String word = currentWordTv.getText().toString().toLowerCase(Locale.ROOT);
+                if (is_valid_word(word)){
+                    score+= countScore(word);
+                }else{
+                    score-=10;
+                }
+                Log.w("score",Integer.toString(score) );
                 listener.onInputGameSent(score);
+
             }
         });
         r1c1.setOnClickListener(new View.OnClickListener() {

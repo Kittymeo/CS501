@@ -9,11 +9,11 @@
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Enter a word then hit submit."
+        android:layout_height="21dp"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
-        android:layout_gravity="center"/>
+        android:text="Enter a word then hit submit."
+        android:textSize="20dp" />
 
     <TableLayout
         android:layout_width="wrap_content"

@@ -63,6 +63,7 @@ public class GameFragment extends Fragment {
     public Button submitBtn;
     public TextView currentWordTv;
     public TextView changeBoolean;
+    public Button[][] btn_list;
 
 //    public Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
 
@@ -95,6 +96,8 @@ public class GameFragment extends Fragment {
         clearWord();
         used_words = new ArrayList<String>(60);
         score =0;
+
+
 //        changeBoolean.setText("false");
 
     }
@@ -128,7 +131,7 @@ public class GameFragment extends Fragment {
         }
 
     }
-    public void populateBtns(Button[][] btn_list){
+    public void populateBtns(){
         Random rn = new Random();
 //        btn_list[0][0].setText(alphabet.get(rn.nextInt(26)));
 //        if(btn_list[0][0] != null){
@@ -252,11 +255,11 @@ public class GameFragment extends Fragment {
 
 
 
-        Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
+        btn_list = new Button[][]{{r1c1, r1c2, r1c3, r1c4}, {r2c1, r2c2, r2c3, r2c4}, {r3c1, r3c2, r3c3, r3c4}, {r4c1, r4c2, r4c3, r4c4}};
         currentWordTv.setText("");
         current_word="";
         changeAlphabet();
-        populateBtns(btn_list);
+        populateBtns();
 
 
         getParentFragmentManager().setFragmentResultListener("newGameData", this, new FragmentResultListener() {
@@ -281,6 +284,7 @@ public class GameFragment extends Fragment {
                 if (charSequence.toString().equals("true")){
                     Log.w("textchange","equals true");
                     newGame();
+                    populateBtns();
                 }
             }
 

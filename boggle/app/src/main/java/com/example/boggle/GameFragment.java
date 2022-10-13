@@ -5,8 +5,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,13 +31,16 @@ import java.util.Scanner;
 public class GameFragment extends Fragment {
     public GameListener listener;
     public int score;
-    public List<String> dictionary = Arrays.asList("apple", "pear", "banana");
+    public List<String> dictionary = Arrays.asList("apple", "pear", "banana","jeans");
     public ArrayList<String> used_words = new ArrayList<String>(60);
     public ArrayList<Character> alphabet = new ArrayList<Character>(60);
     public List<Character> vowels= Arrays.asList('a','e','i','o','u');
     public String current_word;
     public Button current_Btn;
-    public  Button last_Btn;
+    public Button last_Btn;
+    public ArrayList<Button> buttonList = new ArrayList<Button>(16);
+    public ArrayList<Button> gameButtonList = new ArrayList<Button>(0);
+
 
 
     public Button r1c1;
@@ -54,11 +62,55 @@ public class GameFragment extends Fragment {
     public Button clearBtn;
     public Button submitBtn;
     public TextView currentWordTv;
+    public TextView changeBoolean;
 
 //    public Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
 
+    public void clearWord(){
+        Log.w("textchange","reach clearWord()");
+        for (int i=0;i<buttonList.size();i++){
+            if (buttonList.get(i)==null){
+                break;
+            }
+            gameButtonList.add(buttonList.get(i));
+
+        }
+        buttonList.clear();
+        currentWordTv.setText("");
+        current_word="";
+        current_Btn = null;
+        last_Btn = null;
+
+    }
+    public void newGame(){
+        for (int i=0;i<gameButtonList.size();i++){
+            if (gameButtonList.get(i)==null){
+                break;
+            }
+            gameButtonList.get(i).setEnabled(true);
+
+        }
+        clearWord();
+        Log.w("textchange","reach newGame()");
+        clearWord();
+        used_words = new ArrayList<String>(60);
+        score =0;
+//        changeBoolean.setText("false");
+
+    }
     public interface GameListener{
         void onInputGameSent(int score);
+    }
+
+    public void loadDictionary(){
+        File file = new File("../../assets/words.txt");
+        if (file.exists()){
+            Log.w("file", "file exist");
+        }else{
+            Log.w("file", "file not exist");
+        }
+
+
     }
 
     public void changeAlphabet(){
@@ -193,20 +245,66 @@ public class GameFragment extends Fragment {
         clearBtn = view_gameFragment.findViewById(R.id.clear_btn);
         submitBtn = view_gameFragment.findViewById(R.id.submit_btn);
         currentWordTv = view_gameFragment.findViewById(R.id.selected_word);
+        changeBoolean = view_gameFragment.findViewById(R.id.changeB);
+
+        loadDictionary();
 
 
-//        Scanner s = new Scanner(new File("filepath"));
-//        ArrayList<String> list = new ArrayList<String>();
-//        while (s.hasNext()){
-//            list.add(s.next());
-//        }
-//        s.close();
+
 
         Button[][] btn_list = {{r1c1,r1c2,r1c3,r1c4},{r2c1,r2c2,r2c3,r2c4},{r3c1,r3c2,r3c3,r3c4},{r4c1,r4c2,r4c3,r4c4}};
-        currentWordTv.setText(" ");
+        currentWordTv.setText("");
         current_word="";
         changeAlphabet();
         populateBtns(btn_list);
+
+
+        getParentFragmentManager().setFragmentResultListener("newGameData", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if(result.getBoolean("newGame")){
+                    changeBoolean.setText("true");
+                }
+
+            }
+        });
+
+        changeBoolean.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.w("textchange",charSequence.toString());
+                if (charSequence.toString().equals("true")){
+                    Log.w("textchange","equals true");
+                    newGame();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
+        clearBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int i=0;i<buttonList.size();i++){
+                    if (buttonList.get(i)==null){
+                        break;
+                    }
+                    buttonList.get(i).setEnabled(true);
+
+                }
+                clearWord();
+
+            }
+        });
         submitBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -218,7 +316,12 @@ public class GameFragment extends Fragment {
                     score-=10;
                 }
                 Log.w("score",Integer.toString(score) );
+                clearWord();
                 listener.onInputGameSent(score);
+
+                Bundle result = new Bundle();
+                result.putInt("score", score);
+                getParentFragmentManager().setFragmentResult("gameData", result);
 
             }
         });
@@ -232,6 +335,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r1c1;
+                    buttonList.add(r1c1);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -246,6 +350,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r1c2;
+                    buttonList.add(r1c2);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -260,6 +365,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r1c3;
+                    buttonList.add(r1c3);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -274,6 +380,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r1c4;
+                    buttonList.add(r1c4);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -288,6 +395,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r2c1;
+                    buttonList.add(r2c1);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -302,6 +410,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r2c2;
+                    buttonList.add(r2c2);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -316,6 +425,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r2c3;
+                    buttonList.add(r2c3);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -330,6 +440,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r2c4;
+                    buttonList.add(r2c4);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -344,6 +455,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r3c1;
+                    buttonList.add(r3c1);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -358,6 +470,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r3c2;
+                    buttonList.add(r3c2);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -372,6 +485,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r3c3;
+                    buttonList.add(r3c3);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -386,6 +500,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r3c4;
+                    buttonList.add(r3c4);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -400,6 +515,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r4c1;
+                    buttonList.add(r4c1);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -414,6 +530,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r4c2;
+                    buttonList.add(r4c2);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -428,6 +545,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r4c3;
+                    buttonList.add(r4c3);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }
@@ -442,6 +560,7 @@ public class GameFragment extends Fragment {
                     currentWordTv.setText(current_word);
                     last_Btn = current_Btn;
                     current_Btn = r4c4;
+                    buttonList.add(r4c4);
                 }else{
                     Toast.makeText(getActivity(), "Not valid move", Toast.LENGTH_SHORT).show();
                 }

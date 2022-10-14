@@ -1,6 +1,7 @@
 package com.example.boggle;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +35,7 @@ import java.util.Scanner;
 public class GameFragment extends Fragment {
     public GameListener listener;
     public int score;
-    public List<String> dictionary = Arrays.asList("apple", "pear", "banana","jeans");
+    public List<String> dictionary = new ArrayList<>(Arrays.asList("apple", "pear", "banana","jeans"));
     public ArrayList<String> used_words = new ArrayList<String>(60);
     public ArrayList<Character> alphabet = new ArrayList<Character>(60);
     public List<Character> vowels= Arrays.asList('a','e','i','o','u');
@@ -106,12 +110,32 @@ public class GameFragment extends Fragment {
     }
 
     public void loadDictionary(){
-        File file = new File("../../assets/words.txt");
-        if (file.exists()){
-            Log.w("file", "file exist");
-        }else{
-            Log.w("file", "file not exist");
+        AssetManager assetManager = getResources().getAssets();
+        InputStream inputStream = null;
+
+        try {
+            inputStream = assetManager.open("words.txt");
+            Log.w("file", "opened file");
+            BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+//            dictionary.add(r.readLine().toLowerCase(Locale.ROOT));
+//            Log.w("file", dictionary.get(4));
+            while (r.readLine() != null) {
+                dictionary.add(r.readLine().toLowerCase(Locale.ROOT));
+                Log.w("file", r.readLine().toLowerCase(Locale.ROOT));
+            }
+
+//
+
+        } catch (IOException e) {
+//            e.printStackTrace();
+            Log.w("file", "failed open file");
         }
+//        File file = new File("../../assets/words.txt");
+//        if (file.exists()){
+//            Log.w("file", "file exist");
+//        }else{
+//            Log.w("file", "file not exist");
+//        }
 
 
     }
@@ -191,6 +215,13 @@ public class GameFragment extends Fragment {
                 vol_num+=1;
             }
         }
+        Log.w("compare",str);
+        if(dictionary.contains(str)){
+            Log.w("compare","dic not contain");
+        }else{
+            Log.w("compare","dic not contain");
+        }
+
         if (str.length()>=4 && dictionary.contains(str) && vol_num>=2 && !used_words.contains(str)){
             used_words.add(str);
             return true;
